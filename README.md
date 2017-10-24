@@ -1,4 +1,7 @@
 # COMP211P_GroupB
+//--------------------------
+//Code Starts Here
+//--------------------------
 
 import java.util.Scanner;
 public class Menu
