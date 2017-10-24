@@ -1,2 +1,13 @@
 # COMP211P_GroupB
-Eds branch of the master
+
+import java.util.scanner
+public class COMP211P_GroupB
+{
+  public static void main(String[] args)
+  {
+  
+  }
+
+
+}
+
