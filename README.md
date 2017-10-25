@@ -66,7 +66,42 @@ public class Menu
         }
         System.out.println("\n\t\tPROGRAM ENDED\n");
     }
-
+    
+    //--------------------------------------
+    //Registers a player
+    //--------------------------------------
+    
+    public static void register ()
+    {
+        Scanner scan = new Scanner(System.in);
+      
+        System.out.print("\n\t\tEnter your name: ");
+        String aName = scan.nextLine();
+        System.out.print("\n\t\tEnter your username: ");
+        String aUser = scan.nextLine();
+        System.out.print("\n\t\tEnter your password: ");
+        String aPass = scan.nextLine();
+      
+        Player thePlayer = new Player(aName, aUser, aPass);
+    }
 }
 
+//Seperate Class for Player
+public class Player
+{
+    
+    private String name;
+    private String user;
+    private String pass;
+  
+    
+    
+    public Player (String playername, String username, String password)
+    {
+        name = playername;
+        user = username;
+        pass = password;
+    }
+    
+}
 
