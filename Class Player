@@ -1,3 +1,20 @@
+public static void register (Player aPlayer)
+{
+    Scanner scan = new Scanner(System.in);
+  
+    System.out.print("\n\t\tEnter your name: ");
+    String aName = scan.nextLine();
+    aPlayer.setName(name);
+    System.out.print("\n\t\tEnter your username: ");
+    String aUser = scan.nextLine();
+    aPlayer.setUsername(username);
+    System.out.print("\n\t\tEnter your password: ");
+    String aPass = scan.nextLine();
+    aPlayer.setPassword(password); 
+  
+    Player thePlayer = new Player(aName, aUser, aPass);
+}
+
 public class Player {
 
 private String name;
