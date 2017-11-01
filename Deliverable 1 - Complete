@@ -1,0 +1,166 @@
+import java.util.Scanner; 
+public class GameMenu { 
+public static Player thePlayer;
+public static void main(String[] args) { 
+Scanner scan = new Scanner(System.in);
+
+    // -----------------------------------------------------
+    // Menu code
+    // -----------------------------------------------------
+    
+    char selection = 'z';
+    while ( ! (selection == 'b' || selection == 'p' || selection == 'q' ) )
+    {
+        System.out.println(selection);
+        System.out.println("\tWelcome to the Word Game");
+        System.out.println("\t\tLogin (L)");
+        System.out.println("\t\tRegister (R)");
+        System.out.println("\t\tAbout (A)");
+        System.out.println("\t\tPlay the Game (P)");
+        System.out.println("\t\tShow the Leader Board (B)");
+        System.out.println("\t\tQuit (Q) ");
+        System.out.print("\n\t\tPlease choose an option: ");
+        
+        //---------------------------------------------------
+        //Option Selection
+        //---------------------------------------------------
+        String input = scan.next();
+		input = input.toLowerCase();
+        selection = input.charAt(0);
+		
+        switch (selection)
+        {  		
+          case 'l':
+            System.out.println("\t\tLogin Details");
+            login();
+            break;
+          case 'r':
+            register();
+            //Register
+            break;
+          case 'a':
+            //About
+            instructions();
+            break;
+          case 'b'://So error message doesn't show when quitting
+          break;
+		  case 'p'://So error message doesn't show when quitting
+          break;
+		  case 'q'://So error message doesn't show when quitting
+          break;
+          default:  //Error incase of invalid option selection
+            System.out.println("\n\t\tPlease choose a valid option");
+            break;
+        }
+        
+    }
+    System.out.println("\n\t\tPROGRAM ENDED\n");
+}
+//--------------------------------------
+//Registers a player
+//--------------------------------------
+
+public static void register ()
+{
+    Scanner scan = new Scanner(System.in);
+  
+    System.out.print("\n\t\tEnter your name: ");
+    String name = scan.nextLine();
+    System.out.print("\n\t\tEnter your username: ");
+    String username = scan.nextLine();
+    System.out.print("\n\t\tEnter your password: ");
+    String password = scan.nextLine();
+  
+    thePlayer = new Player(name, username, password);
+}
+//--------------------------------------
+//Logs In a player
+//--------------------------------------
+
+public static void login ()
+{
+    Scanner scan = new Scanner(System.in);
+
+    System.out.print("\t\tUsername:");
+    String userName = scan.nextLine();
+    System.out.print("\n\t\tPassword: ");
+    String password = scan.nextLine();
+    
+    if ( userName.equals(thePlayer.getUsername() ) && password.equals(thePlayer.getPassword() ) )
+    {
+      System.out.println("\tWelcome! You have successfully logged in.");
+    }
+    else
+    {
+    System.out.println("\tUsername or Password Incorrect.");
+    }
+}
+//--------------------------------------
+//Displays Instructions
+//--------------------------------------
+public static void instructions()
+{
+   System.out.println("\tInstructions");
+}
+
+
+    
+}
+
+
+public class Player {
+
+private String name;
+private String username;
+private String password;
+ 
+//Initialises the variables
+public Player()
+{
+    name = "";
+    username = "";
+    password = "";
+}
+
+
+
+public Player (String name, String username, String password)
+{
+    this.name = name;
+    this.username = username;
+    this.password = password;
+}
+
+//Getters
+public String getName()
+{ 
+     return name;
+}
+
+public String getUsername()
+{
+     return username;
+}
+
+public String getPassword()
+{
+      return password;
+}
+//Setter
+
+public void setName(String name)
+{ 
+    this.name = name;
+}
+
+public void setUsername(String username)
+{ 
+    this.username = username;
+}
+
+public void setPassword(String password)
+{ 
+    this.password = password;
+}
+    
+}
