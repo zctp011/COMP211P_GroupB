@@ -1,0 +1,57 @@
+public class Player {
+
+private String name;
+private String username;
+private String password;
+ 
+//Initialises the variables
+public Player()
+{
+    name = "";
+    username = "";
+    password = "";
+}
+
+
+
+public Player (String name, String username, String password)
+{
+    this.name = name;
+    this.username = username;
+    this.password = password;
+}
+
+//Getters
+public string getName()
+{ 
+     return name;
+}
+
+public string getUsername()
+{
+     return username;
+}
+
+public string getPassword()
+{
+      return password;
+}
+//Setter
+
+public void setName(string name)
+{ 
+    this.name = name;
+}
+
+public void setUsername(string username)
+{ 
+    this.username = username;
+}
+
+public void setPassword(string password)
+{ 
+    this.password = password;
+}
+ 
+ 
+
