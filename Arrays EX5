@@ -211,3 +211,22 @@ public class NamedPatient
       return name;
    }
 }
+
+
+
+
+import java.util.Arrays 
+public class ResizingArray {
+
+    public static void main(String[] args) {
+
+        String[] stringArray = new String[2] //A string array with 2 strings 
+        stringArray[0] = "string1";
+        stringArray[1] = "string2";
+
+        // increase size and add string to array by copying to a temporary array
+        String[] tempStringArray = Arrays.copyOf(stringArray, stringArray.length + 1);
+        // Add in the new string 
+        tempStringArray[2] = "string3";
+        // Copy temp array to original array
+        stringArray = tempStringArray;
