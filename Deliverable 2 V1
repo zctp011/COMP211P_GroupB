@@ -1,0 +1,474 @@
+public class Game
+  
+{
+   public static void main(String[] args)
+   {
+     Menu gameMenu = new Menu();
+     gameMenu.runMenu();
+   }
+}
+
+//----------------------------------------------------------------------------------------------------------------------------
+
+public class Player 
+{
+
+	private String name;
+	private String username;
+	private String password;
+  private int highscore;
+ 
+	//--------------------------------------------------------
+	//  Sets the default values 
+	//--------------------------------------------------------
+	
+  public Player()
+  {
+      name = " ";
+      username = " ";
+      password = " ";
+      highscore = 0;
+  }
+
+  //---------------------------------------------------------
+  //  Creates an object for the player
+  //---------------------------------------------------------
+
+  public Player (String name, String username, String password)
+  {
+    this.name = name;
+    this.username = username;
+    this.password = password;
+    this.highscore = 0;
+  }
+  
+  //---------------------------------------------------------
+  //  Sets the values for name, username and password
+  //---------------------------------------------------------
+  
+  public void setName(String aName)
+  {
+     name = aName;
+  }
+  
+  public void setUsername(String aUsername)
+  {
+     username = aUsername;
+  }
+  
+  public void setPassword(String aPassword)
+  {
+     password = aPassword;
+  }
+  
+  public void setHighscore(int aHighscore)
+  {
+     highscore = aHighscore;
+  }
+  
+  
+  //---------------------------------------------------------
+  //  Returns values for name, username and password
+  //---------------------------------------------------------
+
+  public String getName()
+  { 
+       return name;
+  }
+
+  public String getUsername()
+  {
+       return username;
+  }
+
+  public String getPassword()
+  {
+       return password;
+  }
+  
+  public int getHighscore()
+  {
+       return highscore;
+  }
+
+  public boolean passwordMatch(Player otherPlayer)
+  {
+      return (username.equals(otherPlayer.username)
+              && password.equals(otherPlayer.password));
+  }
+  
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------
+
+import java.util.Scanner;
+import java.util.Arrays;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+
+public class Menu
+  
+{
+      // length of the registered player list
+      final static int LIST_SIZE = 10;
+
+      // creates characters for selections in the menus
+      public static char registerSelection, menuSelection; 
+
+      // blank player
+      public static Player thePlayer;
+
+      // blank array to add player details to
+      public static Player[] playerlist;
+
+      // newUserNumber is the current number of registered users
+      public static int newUserNumber;
+    
+      // player object for currently logged in player
+      public static Player loggedInPlayer;
+      // boolean for if a user is logged in
+      public static boolean loggedInStatus;
+
+      // sets default values 
+      public Menu()
+      {
+        registerSelection = 'z';
+        menuSelection = 'z';
+        thePlayer = new Player();
+        playerlist = new Player[LIST_SIZE];
+        newUserNumber = 0;
+        loggedInPlayer = new Player(); 
+        loggedInStatus = false;
+      }
+
+      public static void runMenu()
+      {
+
+         Scanner scan = new Scanner(System.in);   	
+
+         // ---------------------------------------------------------------
+         // Menu code
+         // ---------------------------------------------------------------
+
+         // sets the selection characters to values that aren't used
+         registerSelection = 'z';
+         menuSelection = 'z';
+         while (menuSelection != 'Q' && menuSelection != 'q')
+         {
+              if (loggedInStatus)
+              {
+                System.out.println("\n");
+                System.out.println("\t\t Welcome");
+              }
+              else
+              {
+                System.out.println("\n");
+                System.out.println("\t\t Welcome to the Word Game ");
+              }
+           
+              System.out.println("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~");
+              System.out.println("\t\tLogin (L)");
+              System.out.println("\t\tRegister (R)");
+              System.out.println("\t\tAbout (A)");
+              System.out.println("\t\tPlay the Game (P)");
+              System.out.println("\t\tShow the Leader Board (B)");
+              System.out.println("\t\tQuit (Q)");
+              System.out.print("\n\t\tPlease choose an option: ");
+
+              //-----------------------------------------------------------
+              //Option Selection
+              //-----------------------------------------------------------
+
+              menuSelection = scan.next().charAt(0);
+              switch (menuSelection)
+              {
+                case 'L':
+                case 'l':
+                  System.out.println("\n\t\t          LOGIN           ");
+                  System.out.println("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                  loggedInStatus = login(loggedInPlayer, loggedInStatus, newUserNumber, playerlist);
+                  break;
+                case 'R':
+                case 'r':
+                  newUserNumber = register(playerlist, newUserNumber);
+                  break;
+                case 'A':
+                case 'a':
+                  instructions();
+                  break;
+                case 'P':
+                case 'p':
+                  if (loggedInStatus)
+                  {
+                    System.out.println("\t\tStarting Game");
+                    //temporary - quits game if user is logged in
+                    menuSelection = 'q';
+                  }
+                  else
+                  {
+                    System.out.println("\t\tSorry, you need to login to play");
+                  }
+                  break;
+                case 'B':
+                case 'b':
+                  menuSelection = 'Q'; //Temporary
+                  //Leader Board
+                  break;
+                case 'Q': //So error message doesn't show when quitting
+                case 'q':
+                  quit(playerlist, newUserNumber);
+                  break;
+                default:
+                  //Error message incase of invalid option selection
+                  System.out.println("\n\t\tPlease choose a valid option");
+                  break;
+              }
+
+          }
+          System.out.println("\n\t\tPROGRAM ENDED\n");
+
+      }
+
+//-------------------------------------------------------------------------
+//Registers a player
+//-------------------------------------------------------------------------
+
+    public static int register (Player[] playerlist, int newUserNumber)
+    {
+        
+       // Check if playerlist is full 
+       if (newUserNumber == LIST_SIZE)
+       {
+          System.out.println("Maximum number of players already registered.");
+       }
+        else
+        {
+        System.out.println("\n\t\t         REGISTER         ");
+        System.out.println("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        
+        // Creates a new player object
+        Player newPlayer = new Player();
+        inputDetailsReg(newPlayer);
+        
+        // Check username exists (and therefore if it is taken)
+        boolean usernameExists = usernameCheck(newPlayer, playerlist, newUserNumber);
+        
+        if (usernameExists)
+        {
+            System.out.println("This username has already been registered");
+        }
+        else
+        {
+            // Adds the player to the playerlist array
+            playerlist[newUserNumber] = newPlayer;
+            // Increases the number of users registered by one
+            newUserNumber++;
+       }
+       }
+       return newUserNumber;
+       
+    }
+
+    
+    // Allows the player to input their details for registration   
+    public static void inputDetailsReg(Player aPlayer)
+    {
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("\n\t\tEnter your name: ");
+        aPlayer.setName(scan.nextLine());
+        
+        System.out.print("\n\t\tEnter your username: ");
+        aPlayer.setUsername(scan.nextLine());
+        
+        System.out.print("\n\t\tEnter your password: ");
+        aPlayer.setPassword(scan.nextLine());
+    }
+        
+//-------------------------------------------------------------------------
+//Login process - input details and checks to make sure username and
+//password are correct
+//-------------------------------------------------------------------------
+
+    public static boolean login (Player loggedInPlayer, boolean loggedInStatus,
+                              int newUserNumber, Player[] playerlist)
+    {
+
+        // Check if there are users registered
+        if (newUserNumber == 0)
+        {
+            System.out.println("\n\t\tNo users registered, please register before logging in");
+        }
+        // Check if there is a player logged in
+        else if (loggedInStatus == true)
+        {
+            System.out.println("\n\t\t" + loggedInPlayer.getUsername() + "is currently logged in.");
+        } 
+        else 
+        {
+            
+            Player aPlayer = new Player();
+
+            inputDetailsLog(aPlayer);
+            
+            // Check whether the player is registered
+            boolean usernameExists = usernameCheck(aPlayer, playerlist, newUserNumber);
+
+            if (!usernameExists)
+            {
+                System.out.print("\n\t\tYou haven't registered yet, please register");
+            }
+            else 
+            {
+                // Check username matches password
+                boolean detailsMatch = passwordCheck(aPlayer, playerlist, newUserNumber);
+                if (!detailsMatch)
+                {
+                  System.out.print("\n\t\tPassword incorrect, please try again.");
+                }
+                else
+                {
+                  //login the player
+                  int usernumber = findUserNumber(aPlayer, playerlist, newUserNumber);
+                  
+                  loggedInPlayer = playerlist[usernumber];
+                  loggedInStatus = true;
+                }
+            }
+        }
+        return loggedInStatus;
+    }
+    
+                 
+                 
+    // Allows the player to input their details for logging in  
+    public static void inputDetailsLog(Player aPlayer)
+    {
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("\n\t\tEnter your username: ");
+        aPlayer.setUsername(scan.nextLine());
+        
+        System.out.print("\n\t\tEnter your password: ");
+        aPlayer.setPassword(scan.nextLine());
+    }            
+                 
+                 
+//--------------------------------------
+//Displays Instructions
+//--------------------------------------
+    public static void instructions()
+    {
+       System.out.println("\tInstructions");
+    }
+
+//-------------------------------------------------------------------------
+// Username Check - check if a username is registered
+// (for login and registration purposes)
+//-------------------------------------------------------------------------
+    private static boolean usernameCheck(Player aPlayer, Player[] playerlist, int newUserNumber)
+    {
+        boolean userExists = false;
+        
+        if (newUserNumber != 0)
+        {
+            for (int index = 0; index < newUserNumber; index++) {
+                if (aPlayer.getUsername().equals(playerlist[index].getUsername()))
+                {
+                        userExists = true;
+                }
+            }
+        }
+        
+        return userExists; 
+    }
+
+//-------------------------------------------------------------------------
+// Password Check - check if the given password matches the saved password
+// (for login purposes)
+//-------------------------------------------------------------------------
+                 
+    private static boolean passwordCheck(Player aPlayer, Player[] playerlist, int newUserNumber)
+    {
+        boolean passwordMatch = false;
+        
+        if (newUserNumber != 0)
+        {
+            for (int index = 0; index < newUserNumber; index++) {
+                if (aPlayer.passwordMatch(playerlist[index]))
+                {
+                        passwordMatch = true;
+                }
+            }
+        }
+        
+        return passwordMatch; 
+    }
+
+//-------------------------------------------------------------------------
+// Finds the number of the user with the given username and password
+//-------------------------------------------------------------------------
+        
+    private static int findUserNumber(Player aPlayer, Player[] playerlist, int newUserNumber)
+    {
+        int userNumber = 0;       
+        for (int index = 0; index < newUserNumber; index++) 
+        {
+            if (aPlayer.passwordMatch(playerlist[index]))
+            {
+                 userNumber = index;
+                 
+            }
+        }
+                
+        return userNumber; 
+    }   
+  
+//-------------------------------------------------------------------------
+// Saves the playerlist as a text file when quitting the program
+//-------------------------------------------------------------------------  
+    
+    private static void quit(Player[] playerlist, int newUserNumber)
+    {
+      PrintWriter outputStream = null;
+        try 
+        {
+            outputStream
+                    = new PrintWriter(new FileOutputStream("playerdata.txt"));
+        } 
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("Error opening the file playerdata.txt.");
+            System.exit(0);
+        }
+      
+        Scanner scan = new Scanner(System.in);
+      
+        outputStream.println(newUserNumber);
+        
+        int userNumber = 0;       
+        for (int index = 0; index < newUserNumber; index++) 
+        {
+            String aName = playerlist[index].getName();
+            String aUsername = playerlist[index].getUsername();
+            String aPassword = playerlist[index].getPassword();
+            int aHighscore = playerlist[index].getHighscore();
+            
+            outputStream.println(aName + " " 
+                                 + aUsername + " "
+                                 + aPassword + " "
+                                 + aHighscore);
+        }
+        
+        outputStream.close();
+      
+      
+    }
+  
+  
+}
+
+ 
