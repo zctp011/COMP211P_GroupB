@@ -17,6 +17,7 @@ public class Player
 	private String username;
 	private String password;
   private int highscore;
+  private int gamesplayed;
  
 	//--------------------------------------------------------
 	//  Sets the default values 
@@ -28,6 +29,7 @@ public class Player
       username = " ";
       password = " ";
       highscore = 0;
+      gamesplayed = 0;
   }
 
   //---------------------------------------------------------
@@ -40,6 +42,16 @@ public class Player
     this.username = username;
     this.password = password;
     this.highscore = 0;
+    this.gamesplayed = 0;
+  }
+  
+  public Player (String name, String username, String password, int highscore, int gamesplayed)
+  {
+    this.name = name;
+    this.username = username;
+    this.password = password;
+    this.highscore = highscore;
+    this.gamesplayed = gamesplayed;
   }
   
   //---------------------------------------------------------
@@ -66,6 +78,10 @@ public class Player
      highscore = aHighscore;
   }
   
+  public void setGamesplayed(int aGamesplayed)
+  {
+     gamesplayed = aGamesplayed;
+  }
   
   //---------------------------------------------------------
   //  Returns values for name, username and password
@@ -90,6 +106,12 @@ public class Player
   {
        return highscore;
   }
+  
+  public int getGamesplayed()
+  {
+       return gamesplayed;
+  }
+  
 
   public boolean passwordMatch(Player otherPlayer)
   {
@@ -104,9 +126,9 @@ public class Player
 //----------------------------------------------------------------------------------------------------------------------------
 
 import java.util.Scanner;
-import java.util.Arrays;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Menu
@@ -139,9 +161,10 @@ public class Menu
         menuSelection = 'z';
         thePlayer = new Player();
         playerlist = new Player[LIST_SIZE];
-        newUserNumber = 0;
+        newUserNumber = readPlayerData(playerlist);
         loggedInPlayer = new Player(); 
         loggedInStatus = false;
+        
       }
 
       public static void runMenu()
@@ -204,8 +227,6 @@ public class Menu
                   if (loggedInStatus)
                   {
                     System.out.println("\t\tStarting Game");
-                    //temporary - quits game if user is logged in
-                    menuSelection = 'q';
                   }
                   else
                   {
@@ -305,7 +326,7 @@ public class Menu
         // Check if there is a player logged in
         else if (loggedInStatus == true)
         {
-            System.out.println("\n\t\t" + loggedInPlayer.getUsername() + "is currently logged in.");
+            System.out.println("\n\t\t" + loggedInPlayer.getUsername() + " is currently logged in.");
         } 
         else 
         {
@@ -334,7 +355,7 @@ public class Menu
                   //login the player
                   int usernumber = findUserNumber(aPlayer, playerlist, newUserNumber);
                   
-                  loggedInPlayer = playerlist[usernumber];
+                  loggedInPlayer.setUsername(playerlist[usernumber].getUsername());
                   loggedInStatus = true;
                 }
             }
@@ -456,19 +477,62 @@ public class Menu
             String aUsername = playerlist[index].getUsername();
             String aPassword = playerlist[index].getPassword();
             int aHighscore = playerlist[index].getHighscore();
+            int aGamesplayed = playerlist[index].getGamesplayed();
             
             outputStream.println(aName + " " 
                                  + aUsername + " "
                                  + aPassword + " "
-                                 + aHighscore);
+                                 + aHighscore + " "
+                                 + aGamesplayed);
         }
         
         outputStream.close();
       
       
     }
-  
-  
+
+//-------------------------------------------------------------------------
+// Reads the playerdata.txt file when starting the program
+//------------------------------------------------------------------------- 
+
+    public static int readPlayerData(Player[] playerlist)
+    {
+       Scanner inputStream = null;
+
+       try
+       {
+         inputStream = new Scanner(new FileInputStream("playerdata.txt"));
+       }
+
+       catch (FileNotFoundException e)
+       {
+         System.out.println("File playerdata.txt was not found");
+         System.out.println("or could not be opened.");
+         return 0;
+       }
+
+       int number = inputStream.nextInt( );
+
+              
+       for (int index = 0; index < number; index++) 
+       {
+            String aName = inputStream.next( );
+            String aUsername = inputStream.next( );
+            String aPassword = inputStream.next( );
+            int aHighscore = inputStream.nextInt( );
+            int aGamesplayed = inputStream.nextInt( );
+            Player aPlayer = new Player(aName, aUsername, aPassword, aHighscore, aGamesplayed);
+
+            playerlist[index] = aPlayer;
+           
+       }   
+
+       return number;
+    }
+    
+    
+    
 }
 
+  
  
