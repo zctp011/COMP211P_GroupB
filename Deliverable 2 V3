@@ -125,6 +125,33 @@ public class Player
 
 //----------------------------------------------------------------------------------------------------------------------------
 
+public class LoggedInPlayer extends Player
+{
+  
+  // boolean for if a user is logged in
+  public static boolean loggedInStatus;
+  
+  public LoggedInPlayer()
+  {
+      super();
+      this.loggedInStatus = false;
+  }
+  
+  public boolean getStatus()
+  {
+      return loggedInStatus;
+  }
+  
+  public void setStatus(boolean status)
+  {
+      loggedInStatus = status;
+  }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------------
+
+
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
@@ -150,9 +177,7 @@ public class Menu
       public static int newUserNumber;
     
       // player object for currently logged in player
-      public static Player loggedInPlayer;
-      // boolean for if a user is logged in
-      public static boolean loggedInStatus;
+      public static LoggedInPlayer currentPlayer;
 
       // sets default values 
       public Menu()
@@ -162,9 +187,7 @@ public class Menu
         thePlayer = new Player();
         playerlist = new Player[LIST_SIZE];
         newUserNumber = readPlayerData(playerlist);
-        loggedInPlayer = new Player(); 
-        loggedInStatus = false;
-        
+        currentPlayer = new LoggedInPlayer(); 
       }
 
       public static void runMenu()
@@ -181,10 +204,10 @@ public class Menu
          menuSelection = 'z';
          while (menuSelection != 'Q' && menuSelection != 'q')
          {
-              if (loggedInStatus)
+              if (currentPlayer.getStatus())
               {
                 System.out.println("\n");
-                System.out.println("\t\t Welcome");
+                System.out.println("\t\t Welcome " + currentPlayer.getUsername());
               }
               else
               {
@@ -212,7 +235,7 @@ public class Menu
                 case 'l':
                   System.out.println("\n\t\t          LOGIN           ");
                   System.out.println("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                  loggedInStatus = login(loggedInPlayer, loggedInStatus, newUserNumber, playerlist);
+                  currentPlayer.setStatus( login(currentPlayer, newUserNumber, playerlist) );
                   break;
                 case 'R':
                 case 'r':
@@ -224,9 +247,16 @@ public class Menu
                   break;
                 case 'P':
                 case 'p':
-                  if (loggedInStatus)
+                  if (currentPlayer.getStatus())
                   {
                     System.out.println("\t\tStarting Game");
+                    
+                    // adds one to the number of games played
+                    int aPlayerNumber = findUserNumber(currentPlayer, playerlist, newUserNumber);
+                    int gamesPlayed = playerlist[aPlayerNumber].getGamesplayed();
+                    gamesPlayed++;
+                    playerlist[aPlayerNumber].setGamesplayed(gamesPlayed);
+                      
                   }
                   else
                   {
@@ -299,14 +329,36 @@ public class Menu
     {
         Scanner scan = new Scanner(System.in);
 
+        
         System.out.print("\n\t\tEnter your name: ");
-        aPlayer.setName(scan.nextLine());
+        String aName = scan.nextLine();
+        // checks that the user inputs something
+        while (aName.contains(" ")) 
+        {
+          System.out.println("Please input a name without spaces");
+          aName = scan.nextLine();
+        }
+        aPlayer.setName(aName);
         
         System.out.print("\n\t\tEnter your username: ");
-        aPlayer.setUsername(scan.nextLine());
+        String aUsername = scan.nextLine();
+        // checks that the user inputs something
+        while (aUsername.contains(" ")) 
+        {
+          System.out.println("Please input a username without spaces");
+          aName = scan.nextLine();
+        }
+        aPlayer.setUsername(aUsername);
         
         System.out.print("\n\t\tEnter your password: ");
-        aPlayer.setPassword(scan.nextLine());
+        String aPass = scan.nextLine();
+        // checks that the user inputs something
+        while (aPass.contains(" ")) 
+        {
+          System.out.println("Please input a password without spaces");
+          aPass = scan.nextLine();
+        }
+        aPlayer.setPassword(aPass);
     }
         
 //-------------------------------------------------------------------------
@@ -314,8 +366,7 @@ public class Menu
 //password are correct
 //-------------------------------------------------------------------------
 
-    public static boolean login (Player loggedInPlayer, boolean loggedInStatus,
-                              int newUserNumber, Player[] playerlist)
+    public static boolean login (LoggedInPlayer currentPlayer, int newUserNumber, Player[] playerlist)
     {
 
         // Check if there are users registered
@@ -324,9 +375,9 @@ public class Menu
             System.out.println("\n\t\tNo users registered, please register before logging in");
         }
         // Check if there is a player logged in
-        else if (loggedInStatus == true)
+        else if (currentPlayer.getStatus())
         {
-            System.out.println("\n\t\t" + loggedInPlayer.getUsername() + " is currently logged in.");
+            System.out.println("\n\t\t" + currentPlayer.getUsername() + " is currently logged in.");
         } 
         else 
         {
@@ -355,12 +406,12 @@ public class Menu
                   //login the player
                   int usernumber = findUserNumber(aPlayer, playerlist, newUserNumber);
                   
-                  loggedInPlayer.setUsername(playerlist[usernumber].getUsername());
-                  loggedInStatus = true;
+                  currentPlayer.setUsername(playerlist[usernumber].getUsername());
+                  currentPlayer.setStatus(true);
                 }
             }
         }
-        return loggedInStatus;
+        return currentPlayer.getStatus();
     }
     
                  
@@ -439,6 +490,25 @@ public class Menu
         for (int index = 0; index < newUserNumber; index++) 
         {
             if (aPlayer.passwordMatch(playerlist[index]))
+            {
+                 userNumber = index;
+                 
+            }
+        }
+                
+        return userNumber; 
+    }   
+
+//-------------------------------------------------------------------------
+// Finds the number of the user that is currently logged in 
+//-------------------------------------------------------------------------
+        
+    private static int findUserNumber(LoggedInPlayer aPlayer, Player[] playerlist, int newUserNumber)
+    {
+        int userNumber = 0;       
+        for (int index = 0; index < newUserNumber; index++) 
+        {
+            if (aPlayer.getUsername().equals(playerlist[index].getUsername()))
             {
                  userNumber = index;
                  
