@@ -1,0 +1,39 @@
+public static Question[] questionSelection(Question[] questionlist, int quizLength)
+  {
+      Question[] selection = new Question[quizLength];
+      int selectionSize = 0;
+      
+      while (selectionSize < quizLength)
+      {
+          
+          Question aQuestion = randomQuestion(questionlist);
+          //if (questionInList(selection, selectionSize, aQuestion))
+          //{ }
+          //else
+          //{
+            selection[selectionSize] = aQuestion;
+            selectionSize ++;
+          //}
+      }
+      return selection;    
+  }
+	
+  public static Question randomQuestion(Question[] questionlist)
+  {
+      if(questionlist == null)
+      {
+         return null;
+	  }
+      return questionlist[new Random().nextInt(questionlist.length)];
+  }
+    
+  public static boolean questionInList(Question[] aList, int listLength, Question aQuestion)
+  {
+      boolean inList = false;
+      for(int index = 0; index < listLength; index++)
+      {
+        if (aList[index].equals(aQuestion))
+          inList = true;
+      }
+      return inList;
+  }
