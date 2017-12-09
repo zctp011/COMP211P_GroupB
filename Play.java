@@ -16,7 +16,7 @@ public class Play
 		/*first call this method to scan the file once*/  
 
     String QuizQuestion = FileReader.getRandomQuestion();
- /*Creates an array of the words in a given Question */
+  /*Creates an array of the words in a given Question */
    QuizQuestion1 = QuizQuestion.split(",");
     
       
@@ -83,17 +83,21 @@ public class Play
       else if (answer == 5) /* The question is skipped */
       {
         SkippedCount++; /* Counts the number of skipped questions */
+        
         returnFeedback();
       }
       else if (answer != 5 || answer != result)
       {
         
         System.out.println("\t\tInCorrect!");
+        
         returnFeedback();  
     }
       else
       {
         System.out.println("\t\tPlease Enter a valid option");
+        
+        
       }
       break;
     }
@@ -102,8 +106,8 @@ public class Play
       public static void returnFeedback()
       {
         System.out.println();
-        System.out.println("\t\t\t"+QuizQuestion1[0]+ " means " +QuizQuestion1[4]);
         System.out.println();
+        System.out.println("\t\t\t"+QuizQuestion1[0]+ " means " +QuizQuestion1[4]);
         System.out.println();
         System.out.println("\t\tQuestions answered:" +QuestionsAnsweredCount+ "/10");
         System.out.println("\t\tQuestions Skipped:" +SkippedCount+ "/10");
@@ -113,9 +117,32 @@ public class Play
         System.out.println("\t\tPress any key to continue"); 
         Scanner scan3 = new Scanner(System.in);
         scan3.next();
-        if(scan3 != null && QuestionsAnsweredCount < 10)
+        while(scan3 != null )
         {
+          if(QuestionsAnsweredCount <= 9)
+          {
           printQuestions();
+          }
+          else
+          {
+        System.out.println("\t\tGame Over!");
+        System.out.println();
+        System.out.println("\t\tQuestions answered:" +QuestionsAnsweredCount+ "/10");
+        System.out.println("\t\tQuestions Skipped:" +SkippedCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tCurrent score:" +ScoreCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tPress any key to continue"); 
+        Scanner scan4 = new Scanner(System.in);
+        scan4.next();
+        while(scan4 != null)
+        {
+          Menu.runMenu();
         }
+            break;
+        }   
+          break;
+        }
+        
       }
 }
