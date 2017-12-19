@@ -1,0 +1,108 @@
+// in the menu method use "ComPlayer com = new ComPlayer();"
+// then an option in the menu that calls "com.chooseDifficulty(com);"
+// in the play class the following can be used:
+// a check "if (com.getStatus() = true)"
+// and "if (com.isCorrect(com))"
+// followed by "System.out.println("the computer chose" + correctAnswer);"
+
+public class ComPlayer
+{
+  
+  // the max difficulty
+  public final int MAX = 10;
+  // boolean for if a computer player is wanted 
+  private boolean status;
+  // integer value corresponding to the difficulty of the computer player;
+  // the numerical value will roughly equate to how many questions the 
+  // computer will get right.
+  private int difficulty;
+  
+  //construct the default values for the computer
+  public ComPlayer()
+  {
+    status = false;
+    difficulty = 0;
+  }
+  
+  // Set values
+  public void setStatus(boolean aStatus)
+  {
+    status = aStatus;
+  }
+  
+  public void setDifficulty(int aDifficulty)
+  {
+    difficulty = aDifficulty;
+  }	
+  
+  // Get values
+  public boolean getStatus()
+  {
+    return status;
+  }
+  
+  public int getDifficulty()
+  {
+    return difficulty;
+  }
+  
+  // Checks if the computer gets the answer correct
+  public boolean isCorrect(ComPlayer aCom)
+  {
+    int diff = aCom.getDifficulty();
+    // creates a random number from 1 to MAX
+    int randomNumber = ((int)(Math.random() * (MAX)) + 1);
+    
+    if (randomNumber <= diff)
+      return true;
+    else 
+      return false;
+  }
+  
+  // allows the player to choose whether to play against a computer and the difficulty
+  public void chooseDifficulty(ComPlayer aCom)
+  {
+    char diffSelection;
+    
+    System.out.println("\t\t Computer Player Selection");
+    System.out.println("\t\t~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("\t\tEasy (E)");
+    System.out.println("\t\tMedium (M)");
+    System.out.println("\t\tHard (H)");
+    System.out.println("\t\tNone (N)");
+    System.out.print("\n\t\tPlease choose an option: ");
+    
+    diffSelection = scan.next().charAt(0);
+    switch (diffSelection)
+    {
+      case 'E':
+      case 'e':
+        // if a difficulty is selected then the status of computer is true
+        aCom.setStatus(true);
+        // the easy/medium/hard difficulties are just numerical values
+        aCom.setDifficulty(3);
+        break;
+      case 'M':
+      case 'm':
+        aCom.setStatus(true);
+        aCom.setDifficulty(6);
+        break;
+      case 'H':
+      case 'h':
+        aCom.setStatus(true);
+        aCom.setDifficulty(8);
+        break;
+      case 'N':
+      case 'n':
+        // if no computer player is selected then the status will be false
+        aCom.setStatus(false);
+        break;
+
+      default:
+      //Error message incase of invalid option selection
+      System.out.println("\n\t\tPlease choose a valid option");
+      break;
+    }
+  }
+  
+}
