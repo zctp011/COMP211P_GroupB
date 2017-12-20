@@ -636,3 +636,156 @@ public class ScoreSort
         a[j] = temp;
     }
 }
+
+//v ---- FileReader----
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
+import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+
+
+public class FileReader 
+{
+
+	private static Scanner fileScanner;
+	private static File quizFile;
+	private static Question[] questionlist;	
+	final static int QUIZ_LENGTH = 10;
+	
+  
+  
+//------------------------------------------------------------
+// Questions
+// ----------------------------------------------------------- 
+
+	
+  public static String readFiles(String file) 
+  {
+		try 
+    {
+			quizFile = new File(file);
+			
+			String[] questions = new String[findTotalQuestions()];			
+
+			fileScanner = new Scanner(quizFile);
+
+			for (int index = 0; index < questions.length; index++) 
+      {
+				questions[index] = fileScanner.nextLine();
+			}
+			
+			return questions[new Random().nextInt(questions.length)];
+		}
+		catch (FileNotFoundException fileNotFoundException) 
+    {
+			fileNotFoundException.printStackTrace();
+			System.out.println("File mini_quiz.csv was not found.");
+			System.out.println("or couldn't be opened");
+			System.exit(0);
+		}
+    catch(Exception exception)
+    {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+  
+  public static int findTotalQuestions() throws Exception
+  {
+		fileScanner = new Scanner(quizFile);
+  }
+  
+//------------------------------------------------------------
+// Player Data
+// -----------------------------------------------------------  
+  
+  
+//-------------------------------------------------------------------------
+// Saves the playerlist as a text file when quitting the program
+//-------------------------------------------------------------------------  
+    
+    public static void quit(Player[] playerlist, int newUserNumber)
+    {
+      PrintWriter outputStream = null;
+        try 
+        {
+            outputStream
+                    = new PrintWriter(new FileOutputStream("playerdata.txt"));
+        } 
+        catch (FileNotFoundException e) 
+        {
+            System.out.println("Error opening the file playerdata.txt.");
+            System.exit(0);
+        }
+      
+        Scanner scan = new Scanner(System.in);
+      
+        outputStream.println(newUserNumber);
+        
+        int userNumber = 0;       
+        for (int index = 0; index < newUserNumber; index++) 
+        {
+            String aName = playerlist[index].getName();
+            String aUsername = playerlist[index].getUsername();
+            String aPassword = playerlist[index].getPassword();
+            int aHighscore = playerlist[index].getHighscore();
+            int aGamesplayed = playerlist[index].getGamesplayed();
+            
+            outputStream.println(aName + " " 
+                                 + aUsername + " "
+                                 + aPassword + " "
+                                 + aHighscore + " "
+                                 + aGamesplayed);
+        }
+        
+        outputStream.close();
+      
+      
+    }
+
+//-------------------------------------------------------------------------
+// Reads the playerdata.txt file when starting the program
+//------------------------------------------------------------------------- 
+
+    public static int readPlayerData(Player[] playerlist)
+    {
+       Scanner inputStream = null;
+
+       try
+       {
+         inputStream = new Scanner(new FileInputStream("playerdata.txt"));
+       }
+
+       catch (FileNotFoundException e)
+       {
+         System.out.println("File playerdata.txt was not found");
+         System.out.println("or could not be opened.");
+         return 0;
+       }
+
+       int number = inputStream.nextInt( );
+
+              
+       for (int index = 0; index < number; index++) 
+       {
+            String aName = inputStream.next( );
+            String aUsername = inputStream.next( );
+            String aPassword = inputStream.next( );
+            int aHighscore = inputStream.nextInt( );
+            int aGamesplayed = inputStream.nextInt( );
+            Player aPlayer = new Player(aName, aUsername, aPassword, aHighscore, aGamesplayed);
+
+            playerlist[index] = aPlayer;
+           
+       }   
+
+       return number;
+    }
+      
+  
+}
+
+
