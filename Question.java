@@ -1,134 +1,143 @@
+import java.util.Random;
+import java.util.Scanner;
+
 public class Question
 {
-
-	private String question;
-	private String wrong1;
-  private String wrong2;
-  private String wrong3;
-  private String wrong4;
-	private String answer;
-
- 
-	//--------------------------------------------------------
-	//  Sets the default values 
-	//--------------------------------------------------------
-	
-  public Question()
-  {
-      question = " ";
-      wrong1 = " ";
-      wrong2 = " ";
-      wrong3 = " ";
-      wrong4 = " ";
-      answer = " ";
-      
-  }
-
-  //---------------------------------------------------------
-  //  Creates an object for the question
-  //---------------------------------------------------------
-
-  public Question (String question, String wrong1, String wrong2, String wrong3, String wrong4, String answer)
-  {
-      this.question = question;
-      this.wrong1 = wrong1;
-      this.wrong2 = wrong2;
-      this.wrong3 = wrong3;
-      this.wrong4 = wrong4;
-      this.answer = answer;
-  }
+    
+  
+    public static String[] QuizQuestion;
+    public static int result;
+    public static int ScoreCount = 0;
+    public static int SkippedCount = 0;
+    public static int QuestionsAnsweredCount = 0;
 
    //---------------------------------------------------------
-  //  Sets the values
+  //  Shuffles the answer options
   //---------------------------------------------------------
-  
-  public void setQuestion(String aQuestion)
-  {
-     question = aQuestion;
-  }
-  
-  public void setWrong1(String aWrong)
-  {
-     wrong1 = aWrong;
-  }
-  
-  public void setWrong2(String aWrong)
-  {
-     wrong2 = aWrong;
-  }
-  
-  public void setWrong3(String aWrong)
-  {
-     wrong3 = aWrong;
-  }
-  
-  public void setWrong4(String aWrong)
-  {
-     wrong4 = aWrong;
-  }
-  
-  public void setAnswer(String answer)
-  {
-     answer = answer;
-  }
-  
-  //---------------------------------------------------------
-  //  Returns values
-  //---------------------------------------------------------
+      public static void shuffleAnswers(){
+        result = new Random().nextInt(4);
+        result++;
+        
+        QuizQuestion = FileReader.getRandomQuestion().split(",");
+        String holdAnswer = QuizQuestion[result];
+        QuizQuestion[result] = QuizQuestion[4];
+        QuizQuestion[4] = holdAnswer;
 
-  public String getQuestion()
-  { 
-       return question;
-  }
+        System.out.println();
+        System.out.println("\t\tNew word: " +QuizQuestion[0]); 
+        System.out.println();
+        for(int index = 1;index < 5;index++){         
+            System.out.println("\t\t" + (index) + "." +QuizQuestion[index]);          
+        }
+        
+          System.out.println("\t\t5. I’m not sure\t" );
+        System.out.println();
+        System.out.println();
+      }
+  
+  
 
-  public String getWrong1()
-  {
-       return wrong1;
-  }
-
-  public String getWrong2()
-  {
-       return wrong2;
-  }
-  
-  public String getWrong3()
-  {
-       return wrong3;
-  }
-  
-  public String getWrong4()
-  {
-       return wrong4;
-  }
-  
-  public String getAnswer()
-  {
-       return answer;
-  }
-  
-  //checks if a question is equal to another
-  public boolean equals(Question otherQuestion)
-  {
-      return (question.equals(otherQuestion.question)
-              && wrong1.equals(otherQuestion.wrong1)
-              && wrong2.equals(otherQuestion.wrong2)
-              && wrong3.equals(otherQuestion.wrong3)
-              && wrong4.equals(otherQuestion.wrong4)
-              && answer.equals(otherQuestion.answer));
-  }
-  
-  //---------------------------------------------------------
-  //  toString
-  //---------------------------------------------------------
-  
-  public String toString()
-  {
-       return (question + " "
-               + wrong1 + " "
-               + wrong2 + " "
-               + wrong3 + " "
-               + wrong4 + " "
-               + answer);
-  }
-  
+    
+    public static void printQuestion() {
+		    
+       
+      /* Gives a random number without duplication between the range 1-4 */      
+     
+     Question.shuffleAnswers();
+    
+    /* Asks the user to choose an option */
+    System.out.println("\t\tPlease choose an option:");     
+      
+    int answer = 0;
+    
+    do{
+       answer = readInteger(); 
+       if(answer < 0 || answer > 5){
+       System.out.println("\t\tPlease enter a valid option");
+      }
+    }while(answer < 0 || answer > 5);
+      
+      QuestionsAnsweredCount++;
+      if(answer == result) /* The option choosen is correct */
+      {
+        ScoreCount++;  /* Counts the number of correct answers */
+        System.out.println("\t\tCorrect!");
+        returnFeedback();
+        
+      }
+      else if (answer == 5) /* The question is skipped */
+      {
+        SkippedCount++; /* Counts the number of skipped questions */
+        
+        returnFeedback();
+      }
+      else 
+      {
+        
+        System.out.println("\t\tInCorrect!");
+        returnFeedback();  
+    }
+    }
+    
+    
+    
+     /* Provides feedback after every question is answered */
+      public static void returnFeedback()
+      {
+        
+        System.out.println();
+        System.out.println();
+        System.out.println("\t\t\t"+QuizQuestion[0]+ " means " +QuizQuestion[4]);
+        System.out.println();
+        System.out.println("\t\tQuestions answered:" +QuestionsAnsweredCount+ "/10");
+        System.out.println("\t\tQuestions Skipped:" +SkippedCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tCurrent score:" +ScoreCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tPress any key to continue"); 
+        Scanner scan3 = new Scanner(System.in);
+        scan3.next();
+        while(scan3 != null )
+        {
+          if(QuestionsAnsweredCount <= 9)
+          {
+          printQuestion();
+          }
+          else
+          {
+        System.out.println("\t\tGame Over!");
+        System.out.println();
+        System.out.println("\t\tQuestions answered:" +QuestionsAnsweredCount+ "/10");
+        System.out.println("\t\tQuestions Skipped:" +SkippedCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tCurrent score:" +ScoreCount+ "/10");
+        System.out.println();
+        System.out.println("\t\tPress any key to continue"); 
+        Scanner scan4 = new Scanner(System.in);
+        scan4.next();
+        while(scan4 != null)
+        {
+          Menu.runMenu();
+        }
+            break;
+        }   
+          break;
+        }
+        
+      }
+    
+    
+    
+  //Converts input into an integer value //
+      private static int readInteger() {
+        int value = -1;
+         Scanner scan = new Scanner(System.in);
+          String answer = scan.next();  
+        try{
+          value = Integer.parseInt(answer);
+        }catch(Exception exception){
+          
+        }
+        return value;
+      }
 }
